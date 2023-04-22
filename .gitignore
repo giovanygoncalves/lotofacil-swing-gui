@@ -1,0 +1,4 @@
+src/test
+target/*
+!target/lotofacil-swing-gui-1.0-SNAPSHOT-jar-with-dependencies.jar
+nbactions.xml
