@@ -119,7 +119,7 @@ public class GeradorDeJogo extends javax.swing.JFrame {
         primosLabel = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Gerar jogo - Lotofácil");
+        setTitle("Gerador de jogo - Lotofácil");
 
         jPanel1.setPreferredSize(new java.awt.Dimension(460, 516));
 
