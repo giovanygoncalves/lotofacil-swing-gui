@@ -3,7 +3,7 @@ package br.com.g2sapps.lotofacil.dominio;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Globo {
+public class Globo extends EntidadeDeDominio {
 
     private final List<Bola> bolas;
 

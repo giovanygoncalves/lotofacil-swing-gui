@@ -1,37 +1,34 @@
 package br.com.g2sapps.lotofacil.negocio;
 
-import br.com.g2sapps.lotofacil.dominio.Apostador;
+import br.com.g2sapps.lotofacil.dominio.Bola;
+import br.com.g2sapps.lotofacil.dominio.EntidadeDeDominio;
+import br.com.g2sapps.lotofacil.dominio.Gerador;
 import br.com.g2sapps.lotofacil.dominio.Jogo;
-import br.com.g2sapps.lotofacil.dominio.NumerosPrimos;
-import java.util.List;
+import br.com.g2sapps.lotofacil.utilidade.UtilitarioDeNumerosPrimos;
 
-public class ValidadorDeNumerosPrimos implements Validador {
+public class ValidarNumerosPrimos extends ValidarBolaSorteada {
 
-    private List<Integer> numerosPrimos;
     private int minimo;
     private int maximo;
 
-    public ValidadorDeNumerosPrimos() {
-        inicializarNumerosPrimos();
+    public ValidarNumerosPrimos() {
         minimo = 4;
         maximo = 6;
     }
 
-    public ValidadorDeNumerosPrimos(int minimo, int maximo) {
-        inicializarNumerosPrimos();
+    public ValidarNumerosPrimos(int minimo, int maximo) {
         this.minimo = minimo;
         this.maximo = maximo;
     }
 
-    private void inicializarNumerosPrimos() {
-        numerosPrimos = NumerosPrimos.obterNumerosPrimosDe1A25();
-    }
-
     @Override
-    public boolean validar(int numeroSorteado, Jogo jogo) {
-        int quantidadeDeNumerosPrimos = numerosPrimos.contains(numeroSorteado) ? 1 : 0;
+    public boolean processar(EntidadeDeDominio entidadeDeDominio) {
+        Bola bolaSorteada = (Bola) entidadeDeDominio;
+        int numeroSorteado = bolaSorteada.getNumero();
+        Jogo jogo = bolaSorteada.getJogo();
+        int quantidadeDeNumerosPrimos = UtilitarioDeNumerosPrimos.ehPrimo(numeroSorteado) ? 1 : 0;
         for (Integer numerosMarcado : jogo.getListaDeNumerosMarcados()) {
-            if (numerosPrimos.contains(numerosMarcado)) {
+            if (UtilitarioDeNumerosPrimos.ehPrimo(numerosMarcado)) {
                 quantidadeDeNumerosPrimos++;
             }
         }
@@ -39,7 +36,7 @@ public class ValidadorDeNumerosPrimos implements Validador {
     }
 
     private boolean minimoAindaPodeSerAtingido(int quantidadeDeNumerosPrimos, int quantidadeDeNumerosMarcados) {
-        return Apostador.MARCAR_QUANTOS_NUMEROS - quantidadeDeNumerosMarcados - QUANTIDADE_DE_NUMEROS_SENDO_VALIDADA >= minimo - quantidadeDeNumerosPrimos;
+        return Gerador.MARCAR_QUANTOS_NUMEROS - quantidadeDeNumerosMarcados - QUANTIDADE_DE_NUMEROS_SENDO_VALIDADA >= minimo - quantidadeDeNumerosPrimos;
     }
 
     public int getMinimo() {

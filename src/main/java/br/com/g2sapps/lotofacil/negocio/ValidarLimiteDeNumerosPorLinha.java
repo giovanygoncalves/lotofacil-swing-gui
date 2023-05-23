@@ -1,26 +1,31 @@
 package br.com.g2sapps.lotofacil.negocio;
 
+import br.com.g2sapps.lotofacil.dominio.Bola;
+import br.com.g2sapps.lotofacil.dominio.EntidadeDeDominio;
 import br.com.g2sapps.lotofacil.dominio.Jogo;
-import br.com.g2sapps.lotofacil.servico.Utilitario;
+import br.com.g2sapps.lotofacil.utilidade.UtilitarioDeLinha;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class ValidadorDeLimiteDeNumerosPorLinha implements Validador {
+public class ValidarLimiteDeNumerosPorLinha implements RegraDeNegocio {
 
     private final List<Integer> limitesDeNumerosPorLinha;
     private final boolean[] limiteDeNumerosAtingido;
 
-    public ValidadorDeLimiteDeNumerosPorLinha() {
+    public ValidarLimiteDeNumerosPorLinha() {
         limitesDeNumerosPorLinha = new ArrayList<>(Arrays.asList(4, 2, 3, 3, 3));
         limiteDeNumerosAtingido = new boolean[5];
     }
 
     @Override
-    public boolean validar(int numeroSorteado, Jogo jogo) {
+    public boolean processar(EntidadeDeDominio entidadeDeDominio) {
+        Bola bolaSorteada = (Bola) entidadeDeDominio;
+        int numeroSorteado = bolaSorteada.getNumero();
+        Jogo jogo = bolaSorteada.getJogo();
         atualizarLimiteDeNumerosAtingido(jogo.getNumerosMarcados());
-        int indiceDaLinha = Utilitario.obterIndiceDaLinha(numeroSorteado);
+        int indiceDaLinha = UtilitarioDeLinha.obterIndiceDaLinha(numeroSorteado);
         if (limiteDeNumerosAtingido[indiceDaLinha]) {
             return false;
         }
@@ -30,7 +35,7 @@ public class ValidadorDeLimiteDeNumerosPorLinha implements Validador {
             if (limiteDeNumerosAtingido[i]) {
                 continue;
             }
-            int quantidadeDeNumerosMarcadosPorLinha = Utilitario.obterQuantidadeDeNumerosMarcadosPorLinha(jogo.getNumerosMarcados(), i);
+            int quantidadeDeNumerosMarcadosPorLinha = UtilitarioDeLinha.obterQuantidadeDeNumerosMarcadosPorLinha(jogo.getNumerosMarcados(), i);
             quantidadeDeNumerosMarcadosPorLinha += i == indiceDaLinha ? 1 : 0;
             for (Integer limite : limitesExcedidos) {
                 if (quantidadeDeNumerosMarcadosPorLinha <= limite) {
@@ -48,7 +53,7 @@ public class ValidadorDeLimiteDeNumerosPorLinha implements Validador {
             if (limiteDeNumerosAtingido[i]) {
                 continue;
             }
-            int quantidadeDeNumerosMarcadosPorLinha = Utilitario.obterQuantidadeDeNumerosMarcadosPorLinha(numerosMarcados, i);
+            int quantidadeDeNumerosMarcadosPorLinha = UtilitarioDeLinha.obterQuantidadeDeNumerosMarcadosPorLinha(numerosMarcados, i);
             if (quantidadeDeNumerosMarcadosPorLinha == limiteMaximo) {
                 limiteDeNumerosAtingido[i] = true;
                 limitesDeNumerosPorLinha.remove(limiteMaximo);

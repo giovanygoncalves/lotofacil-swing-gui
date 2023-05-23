@@ -1,10 +1,13 @@
 package br.com.g2sapps.lotofacil.dominio;
 
-import br.com.g2sapps.lotofacil.servico.Utilitario;
+import br.com.g2sapps.lotofacil.utilidade.UtilitarioDeColuna;
+import br.com.g2sapps.lotofacil.utilidade.UtilitarioDeLinha;
+import br.com.g2sapps.lotofacil.utilidade.UtilitarioDeNumerosRepetidos;
+import br.com.g2sapps.lotofacil.utilidade.UtilitarioDeNumerosPrimos;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Jogo {
+public class Jogo extends EntidadeDeDominio {
 
     private final int[][] numerosMarcados;
     private final List<Integer> listaDeNumerosMarcados;
@@ -15,21 +18,21 @@ public class Jogo {
     }
 
     public void sinalizarNumeroNaoValidadoAinda(int numero) {
-        int i = Utilitario.obterIndiceDaLinha(numero);
-        int j = Utilitario.obterIndiceDaColuna(numero);
+        int i = UtilitarioDeLinha.obterIndiceDaLinha(numero);
+        int j = UtilitarioDeColuna.obterIndiceDaColuna(numero);
         numerosMarcados[i][j] = StatusDoNumero.NUMERO_NAO_VALIDADO_AINDA.getValor();
     }
 
     public void marcarNumero(int numero) {
-        int i = Utilitario.obterIndiceDaLinha(numero);
-        int j = Utilitario.obterIndiceDaColuna(numero);
+        int i = UtilitarioDeLinha.obterIndiceDaLinha(numero);
+        int j = UtilitarioDeColuna.obterIndiceDaColuna(numero);
         numerosMarcados[i][j] = numero;
         listaDeNumerosMarcados.add(numero);
     }
 
     public void sinalizarNumeroInvalido(int numero) {
-        int i = Utilitario.obterIndiceDaLinha(numero);
-        int j = Utilitario.obterIndiceDaColuna(numero);
+        int i = UtilitarioDeLinha.obterIndiceDaLinha(numero);
+        int j = UtilitarioDeColuna.obterIndiceDaColuna(numero);
         numerosMarcados[i][j] = StatusDoNumero.NUMERO_INVALIDO.getValor();
     }
 
@@ -108,17 +111,17 @@ public class Jogo {
     }
 
     public int obterQuantidadeDeNumerosRepetidosDoUltimoConcurso(List<Integer> numerosSorteadosNoUltimoConcurso) {
-        return Utilitario.obterQuantidadeDeNumerosRepetidosDoUltimoConcurso(numerosMarcados, numerosSorteadosNoUltimoConcurso);
+        return UtilitarioDeNumerosRepetidos.obterQuantidadeDeNumerosRepetidosDoUltimoConcurso(numerosMarcados, numerosSorteadosNoUltimoConcurso);
     }
 
     public int obterQuantidadeDeNumerosQueFaltamSerMarcados() {
-        return Apostador.MARCAR_QUANTOS_NUMEROS - obterQuantidadeDeNumerosMarcados();
+        return Gerador.MARCAR_QUANTOS_NUMEROS - obterQuantidadeDeNumerosMarcados();
     }
 
     public int obterQuantidadeDeNumerosMarcadosPrimos() {
         int quantidade = 0;
         for (Integer numeroMarcado : listaDeNumerosMarcados) {
-            if (Utilitario.numeroPrimo(numeroMarcado)) {
+            if (UtilitarioDeNumerosPrimos.ehPrimo(numeroMarcado)) {
                 quantidade++;
             }
         }

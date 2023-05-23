@@ -1,16 +1,15 @@
-package br.com.g2sapps.lotofacil.main;
+package br.com.g2sapps.lotofacil.principal;
 
-import br.com.g2sapps.lotofacil.dominio.Apostador;
+import br.com.g2sapps.lotofacil.dominio.Gerador;
 import br.com.g2sapps.lotofacil.dominio.Jogo;
 import br.com.g2sapps.lotofacil.dominio.LoteriasCaixa;
-import br.com.g2sapps.lotofacil.negocio.Validador;
-import br.com.g2sapps.lotofacil.negocio.ValidadorDeColunaIncompleta;
-import br.com.g2sapps.lotofacil.negocio.ValidadorDeLimiteDeNumerosPorLinha;
-import br.com.g2sapps.lotofacil.negocio.ValidadorDeLinhaIncompleta;
-import br.com.g2sapps.lotofacil.negocio.ValidadorDeNumerosPrimos;
-import br.com.g2sapps.lotofacil.negocio.ValidadorDeNumerosRepetidos;
-import br.com.g2sapps.lotofacil.negocio.ValidadorDeParesEImpares;
-import br.com.g2sapps.lotofacil.negocio.ValidadorDeSoma;
+import br.com.g2sapps.lotofacil.negocio.ValidarColunaIncompleta;
+import br.com.g2sapps.lotofacil.negocio.ValidarLimiteDeNumerosPorLinha;
+import br.com.g2sapps.lotofacil.negocio.ValidarLinhaIncompleta;
+import br.com.g2sapps.lotofacil.negocio.ValidarNumerosPrimos;
+import br.com.g2sapps.lotofacil.negocio.ValidarNumerosRepetidos;
+import br.com.g2sapps.lotofacil.negocio.ValidarParesEImpares;
+import br.com.g2sapps.lotofacil.negocio.ValidarSoma;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -18,20 +17,21 @@ import java.util.Enumeration;
 import java.util.List;
 import javax.swing.AbstractButton;
 import javax.swing.JLabel;
+import br.com.g2sapps.lotofacil.negocio.RegraDeNegocio;
 
 public class GeradorDeJogo extends javax.swing.JFrame {
 
     private final List<Integer> numerosFixos;
     private final List<Integer> numerosRemovidos;
     private List<Integer> numerosSorteadosNoUltimoConcurso;
-    private final ValidadorDeNumerosRepetidos validadorDeNumerosRepetidos;
-    private final ValidadorDeParesEImpares validadorDeParesEImpares;
-    private final ValidadorDeSoma validadorDeSoma;
-    private ValidadorDeLimiteDeNumerosPorLinha validadorDeLimiteDeNumerosPorLinha;
-    private final ValidadorDeLinhaIncompleta validadorDeLinhaIncompleta;
-    private final ValidadorDeColunaIncompleta validadorDeColunaIncompleta;
-    private final ValidadorDeNumerosPrimos validadorDeNumerosPrimos;
-    private final List<Validador> validadores;
+    private final ValidarNumerosRepetidos validarNumerosRepetidos;
+    private final ValidarParesEImpares validarParesEImpares;
+    private final ValidarSoma validarSoma;
+    private ValidarLimiteDeNumerosPorLinha validarLimiteDeNumerosPorLinha;
+    private final ValidarLinhaIncompleta validarLinhaIncompleta;
+    private final ValidarColunaIncompleta validarColunaIncompleta;
+    private final ValidarNumerosPrimos validarNumerosPrimos;
+    private final List<RegraDeNegocio> regrasDeNegocio;
     private boolean botaoDesabilitadoPorFixarOuRemover;
     private boolean botaoDesabilitadoPorQuantidadeDeNumerosPrimosEntre;
     private final List<JLabel> numerosLabels;
@@ -41,14 +41,14 @@ public class GeradorDeJogo extends javax.swing.JFrame {
         numerosFixos = new ArrayList<>();
         numerosRemovidos = new ArrayList<>();
         inicializarNumerosSorteadosNoUltimoConcurso();
-        validadorDeNumerosRepetidos = new ValidadorDeNumerosRepetidos(numerosSorteadosNoUltimoConcurso);
-        validadorDeParesEImpares = new ValidadorDeParesEImpares();
-        validadorDeSoma = new ValidadorDeSoma();
-        validadorDeLimiteDeNumerosPorLinha = new ValidadorDeLimiteDeNumerosPorLinha();
-        validadorDeLinhaIncompleta = new ValidadorDeLinhaIncompleta();
-        validadorDeColunaIncompleta = new ValidadorDeColunaIncompleta();
-        validadorDeNumerosPrimos = new ValidadorDeNumerosPrimos();
-        validadores = new ArrayList<>();
+        validarNumerosRepetidos = new ValidarNumerosRepetidos(numerosSorteadosNoUltimoConcurso);
+        validarParesEImpares = new ValidarParesEImpares();
+        validarSoma = new ValidarSoma();
+        validarLimiteDeNumerosPorLinha = new ValidarLimiteDeNumerosPorLinha();
+        validarLinhaIncompleta = new ValidarLinhaIncompleta();
+        validarColunaIncompleta = new ValidarColunaIncompleta();
+        validarNumerosPrimos = new ValidarNumerosPrimos();
+        regrasDeNegocio = new ArrayList<>();
         numerosLabels = new ArrayList<>(Arrays.asList(numero1Label, numero2Label, numero3Label, numero4Label, numero5Label, numero6Label, numero7Label, numero8Label, numero9Label, numero10Label, numero11Label, numero12Label, numero13Label, numero14Label, numero15Label, numero16Label, numero17Label, numero18Label, numero19Label, numero20Label, numero21Label, numero22Label, numero23Label, numero24Label, numero25Label));
     }
 
@@ -686,79 +686,79 @@ public class GeradorDeJogo extends javax.swing.JFrame {
     private void numerosFixosListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_numerosFixosListValueChanged
         boolean contemValoresSelecionadosIguais = fixarERemoverContemValoresSelecionadosIguais();
         botaoDesabilitadoPorFixarOuRemover = contemValoresSelecionadosIguais;
-        desabilitarBotao(contemValoresSelecionadosIguais);
+        definirBotaoDesabilitado(contemValoresSelecionadosIguais);
         exibirMensagem(contemValoresSelecionadosIguais);
     }//GEN-LAST:event_numerosFixosListValueChanged
 
     private void numerosRemovidosListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_numerosRemovidosListValueChanged
         boolean contemValoresSelecionadosIguais = fixarERemoverContemValoresSelecionadosIguais();
         botaoDesabilitadoPorFixarOuRemover = contemValoresSelecionadosIguais;
-        desabilitarBotao(contemValoresSelecionadosIguais);
+        definirBotaoDesabilitado(contemValoresSelecionadosIguais);
         exibirMensagem(contemValoresSelecionadosIguais);
     }//GEN-LAST:event_numerosRemovidosListValueChanged
 
     private void oitoNumerosRepetidosRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_oitoNumerosRepetidosRadioButtonActionPerformed
         if (oitoNumerosRepetidosRadioButton.isSelected()) {
-            adicionarValidadorSeNaoContiver(validadorDeNumerosRepetidos);
-            validadorDeNumerosRepetidos.setMinimo(8);
-            validadorDeNumerosRepetidos.setMaximo(8);
+            adicionarSeNaoContiver(validarNumerosRepetidos);
+            validarNumerosRepetidos.setMinimo(8);
+            validarNumerosRepetidos.setMaximo(8);
         }
     }//GEN-LAST:event_oitoNumerosRepetidosRadioButtonActionPerformed
 
     private void noveNumerosRepetidosRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_noveNumerosRepetidosRadioButtonActionPerformed
         if (noveNumerosRepetidosRadioButton.isSelected()) {
-            adicionarValidadorSeNaoContiver(validadorDeNumerosRepetidos);
-            validadorDeNumerosRepetidos.setMinimo(9);
-            validadorDeNumerosRepetidos.setMaximo(9);
+            adicionarSeNaoContiver(validarNumerosRepetidos);
+            validarNumerosRepetidos.setMinimo(9);
+            validarNumerosRepetidos.setMaximo(9);
         }
     }//GEN-LAST:event_noveNumerosRepetidosRadioButtonActionPerformed
 
     private void dezNumerosRepetidosRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_dezNumerosRepetidosRadioButtonActionPerformed
         if (dezNumerosRepetidosRadioButton.isSelected()) {
-            adicionarValidadorSeNaoContiver(validadorDeNumerosRepetidos);
-            validadorDeNumerosRepetidos.setMinimo(10);
-            validadorDeNumerosRepetidos.setMaximo(10);
+            adicionarSeNaoContiver(validarNumerosRepetidos);
+            validarNumerosRepetidos.setMinimo(10);
+            validarNumerosRepetidos.setMaximo(10);
         }
     }//GEN-LAST:event_dezNumerosRepetidosRadioButtonActionPerformed
 
     private void oitoNoveOuDezNumerosRepetidosRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_oitoNoveOuDezNumerosRepetidosRadioButtonActionPerformed
         if (oitoNoveOuDezNumerosRepetidosRadioButton.isSelected()) {
-            adicionarValidadorSeNaoContiver(validadorDeNumerosRepetidos);
-            validadorDeNumerosRepetidos.setMinimo(8);
-            validadorDeNumerosRepetidos.setMaximo(10);
+            adicionarSeNaoContiver(validarNumerosRepetidos);
+            validarNumerosRepetidos.setMinimo(8);
+            validarNumerosRepetidos.setMaximo(10);
         }
     }//GEN-LAST:event_oitoNoveOuDezNumerosRepetidosRadioButtonActionPerformed
 
     private void entre5E15NumerosRepetidosRadioButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_entre5E15NumerosRepetidosRadioButtonActionPerformed
         if (entre5E15NumerosRepetidosRadioButton.isSelected()) {
-            validadores.remove(validadorDeNumerosRepetidos);
+            regrasDeNegocio.remove(validarNumerosRepetidos);
         }
     }//GEN-LAST:event_entre5E15NumerosRepetidosRadioButtonActionPerformed
 
     private void validarParesEImparesCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_validarParesEImparesCheckBoxActionPerformed
         if (validarParesEImparesCheckBox.isSelected()) {
-            validadores.add(validadorDeParesEImpares);
+            regrasDeNegocio.add(validarParesEImpares);
         } else {
-            validadores.remove(validadorDeParesEImpares);
+            regrasDeNegocio.remove(validarParesEImpares);
         }
     }//GEN-LAST:event_validarParesEImparesCheckBoxActionPerformed
 
     private void somaEntre171E220CheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_somaEntre171E220CheckBoxActionPerformed
         if (somaEntre171E220CheckBox.isSelected()) {
-            validadores.add(validadorDeSoma);
+            regrasDeNegocio.add(validarSoma);
         } else {
-            validadores.remove(validadorDeSoma);
+            regrasDeNegocio.remove(validarSoma);
         }
     }//GEN-LAST:event_somaEntre171E220CheckBoxActionPerformed
 
     private void validarLimiteDeNumerosPorLinhaCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_validarLimiteDeNumerosPorLinhaCheckBoxActionPerformed
         if (validarLimiteDeNumerosPorLinhaCheckBox.isSelected()) {
-            validadores.add(validadorDeLimiteDeNumerosPorLinha);
-            validadores.remove(validadorDeLinhaIncompleta);
+            regrasDeNegocio.add(validarLimiteDeNumerosPorLinha);
+            regrasDeNegocio.remove(validarLinhaIncompleta);
             naoCompletarLinhaCheckBox.setSelected(true);
             naoCompletarLinhaCheckBox.setEnabled(false);
         } else {
-            validadores.remove(validadorDeLimiteDeNumerosPorLinha);
+            regrasDeNegocio.remove(validarLimiteDeNumerosPorLinha);
             naoCompletarLinhaCheckBox.setSelected(false);
             naoCompletarLinhaCheckBox.setEnabled(true);
         }
@@ -766,17 +766,17 @@ public class GeradorDeJogo extends javax.swing.JFrame {
 
     private void naoCompletarLinhaCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_naoCompletarLinhaCheckBoxActionPerformed
         if (naoCompletarLinhaCheckBox.isSelected()) {
-            validadores.add(validadorDeLinhaIncompleta);
+            regrasDeNegocio.add(validarLinhaIncompleta);
         } else {
-            validadores.remove(validadorDeLinhaIncompleta);
+            regrasDeNegocio.remove(validarLinhaIncompleta);
         }
     }//GEN-LAST:event_naoCompletarLinhaCheckBoxActionPerformed
 
     private void naoCompletarColunaCheckBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_naoCompletarColunaCheckBoxActionPerformed
         if (naoCompletarColunaCheckBox.isSelected()) {
-            validadores.add(validadorDeColunaIncompleta);
+            regrasDeNegocio.add(validarColunaIncompleta);
         } else {
-            validadores.remove(validadorDeColunaIncompleta);
+            regrasDeNegocio.remove(validarColunaIncompleta);
         }
     }//GEN-LAST:event_naoCompletarColunaCheckBoxActionPerformed
 
@@ -786,7 +786,7 @@ public class GeradorDeJogo extends javax.swing.JFrame {
         if (!validarQuantidadeDeNumerosPrimosEntre(minimo, maximo)) {
             return;
         }
-        adicionarOuRemoverValidadorDeNumerosPrimos(minimo, maximo);
+        adicionarOuRemoverValidarNumerosPrimos(minimo, maximo);
     }//GEN-LAST:event_minimoDeNumerosPrimosSpinnerStateChanged
 
     private void maximoDeNumerosPrimosSpinnerStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_maximoDeNumerosPrimosSpinnerStateChanged
@@ -795,7 +795,7 @@ public class GeradorDeJogo extends javax.swing.JFrame {
         if (!validarQuantidadeDeNumerosPrimosEntre(minimo, maximo)) {
             return;
         }
-        adicionarOuRemoverValidadorDeNumerosPrimos(minimo, maximo);
+        adicionarOuRemoverValidarNumerosPrimos(minimo, maximo);
     }//GEN-LAST:event_maximoDeNumerosPrimosSpinnerStateChanged
 
     private void gerarJogoButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_gerarJogoButtonActionPerformed
@@ -818,7 +818,7 @@ public class GeradorDeJogo extends javax.swing.JFrame {
             } catch (Exception e) {
                 System.err.println(e.getMessage());
             } finally {
-                restaurarValidadorDeLimiteDeNumerosPorLinhaSeSelecionado();
+                restaurarValidarLimiteDeNumerosPorLinhaSeSelecionado();
             }
         } while (!jogoRealizadoComSucesso);
     }//GEN-LAST:event_gerarJogoButtonActionPerformed
@@ -853,11 +853,11 @@ public class GeradorDeJogo extends javax.swing.JFrame {
         boolean valida = maximo >= minimo;
         quantidadeDeNumerosPrimosEntreLabel.setText(valida ? " " : "Valores inválidos");
         botaoDesabilitadoPorQuantidadeDeNumerosPrimosEntre = !valida;
-        desabilitarBotao(!valida);
+        definirBotaoDesabilitado(!valida);
         return valida;
     }
 
-    private void desabilitarBotao(boolean b) {
+    private void definirBotaoDesabilitado(boolean b) {
         if (b) {
             gerarJogoButton.setEnabled(false);
         } else if (!botaoDesabilitadoPorFixarOuRemover && !botaoDesabilitadoPorQuantidadeDeNumerosPrimosEntre) {
@@ -865,27 +865,27 @@ public class GeradorDeJogo extends javax.swing.JFrame {
         }
     }
 
-    private void adicionarOuRemoverValidadorDeNumerosPrimos(int minimo, int maximo) {
+    private void adicionarOuRemoverValidarNumerosPrimos(int minimo, int maximo) {
         if (minimo == 0 && maximo == 9) {
-            validadores.remove(validadorDeNumerosPrimos);
+            regrasDeNegocio.remove(validarNumerosPrimos);
         } else {
-            validadorDeNumerosPrimos.setMinimo(minimo);
-            validadorDeNumerosPrimos.setMaximo(maximo);
-            adicionarValidadorSeNaoContiver(validadorDeNumerosPrimos);
+            validarNumerosPrimos.setMinimo(minimo);
+            validarNumerosPrimos.setMaximo(maximo);
+            adicionarSeNaoContiver(validarNumerosPrimos);
         }
     }
 
-    private void adicionarValidadorSeNaoContiver(Validador validador) {
-        if (!validadores.contains(validador)) {
-            validadores.add(validador);
+    private void adicionarSeNaoContiver(RegraDeNegocio regraDeNegocio) {
+        if (!regrasDeNegocio.contains(regraDeNegocio)) {
+            regrasDeNegocio.add(regraDeNegocio);
         }
     }
 
     private void preencherAreaDosNumerosEscolhidos(List<Integer> numerosFixos, List<Integer> numerosRemovidos) throws Exception {
-        Apostador apostador = new Apostador();
+        Gerador apostador = new Gerador();
         apostador.fixarNumeros(numerosFixos);
         apostador.removerNumeros(numerosRemovidos);
-        Jogo jogo = apostador.gerarJogo(validadores);
+        Jogo jogo = apostador.gerarJogo(regrasDeNegocio);
         List<Integer> numerosMarcados = jogo.getListaDeNumerosMarcados();
         for (int numeroMarcado : numerosMarcados) {
             JLabel numeroLabel = numerosLabels.get(numeroMarcado - 1);
@@ -901,11 +901,11 @@ public class GeradorDeJogo extends javax.swing.JFrame {
         primosLabel.setText("Primos: " + jogo.obterQuantidadeDeNumerosMarcadosPrimos());
     }
 
-    private void restaurarValidadorDeLimiteDeNumerosPorLinhaSeSelecionado() {
+    private void restaurarValidarLimiteDeNumerosPorLinhaSeSelecionado() {
         if (validarLimiteDeNumerosPorLinhaCheckBox.isSelected()) {
-            validadores.remove(validadorDeLimiteDeNumerosPorLinha);
-            validadorDeLimiteDeNumerosPorLinha = new ValidadorDeLimiteDeNumerosPorLinha();
-            validadores.add(validadorDeLimiteDeNumerosPorLinha);
+            regrasDeNegocio.remove(validarLimiteDeNumerosPorLinha);
+            validarLimiteDeNumerosPorLinha = new ValidarLimiteDeNumerosPorLinha();
+            regrasDeNegocio.add(validarLimiteDeNumerosPorLinha);
         }
     }
 

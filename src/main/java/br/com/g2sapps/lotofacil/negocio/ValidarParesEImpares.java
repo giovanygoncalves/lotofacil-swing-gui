@@ -1,20 +1,25 @@
 package br.com.g2sapps.lotofacil.negocio;
 
+import br.com.g2sapps.lotofacil.dominio.Bola;
+import br.com.g2sapps.lotofacil.dominio.EntidadeDeDominio;
 import br.com.g2sapps.lotofacil.dominio.Jogo;
-import static br.com.g2sapps.lotofacil.negocio.Validador.QUANTIDADE_DE_NUMEROS_SENDO_VALIDADA;
+import static br.com.g2sapps.lotofacil.negocio.ValidarBolaSorteada.QUANTIDADE_DE_NUMEROS_SENDO_VALIDADA;
 
-public class ValidadorDeParesEImpares implements Validador {
+public class ValidarParesEImpares extends ValidarBolaSorteada {
 
     private static final int PARES = 0;
     private static final int IMPARES = 1;
     private final int[][] limites;
 
-    public ValidadorDeParesEImpares() {
+    public ValidarParesEImpares() {
         limites = new int[][]{{7, 8}, {8, 7}, {6, 9}};
     }
 
     @Override
-    public boolean validar(int numeroSorteado, Jogo jogo) {
+    public boolean processar(EntidadeDeDominio entidadeDeDominio) {
+        Bola bolaSorteada = (Bola) entidadeDeDominio;
+        int numeroSorteado = bolaSorteada.getNumero();
+        Jogo jogo = bolaSorteada.getJogo();
         return algumLimiteNaoFoiUltrapassado(numeroSorteado, jogo) && algumLimiteAindaPodeSerAtingido(numeroSorteado, jogo);
     }
 

@@ -1,27 +1,33 @@
 package br.com.g2sapps.lotofacil.negocio;
 
+import br.com.g2sapps.lotofacil.dominio.Bola;
+import br.com.g2sapps.lotofacil.dominio.EntidadeDeDominio;
 import br.com.g2sapps.lotofacil.dominio.Jogo;
 import br.com.g2sapps.lotofacil.dominio.StatusDoNumero;
 
-public class ValidadorDeSoma implements Validador {
+public class ValidarSoma extends ValidarBolaSorteada {
 
     private int minimo;
     private int maximo;
 
-    public ValidadorDeSoma() {
+    public ValidarSoma() {
         minimo = 171;
         maximo = 220;
     }
 
-    public ValidadorDeSoma(int minimo, int maximo) {
+    public ValidarSoma(int minimo, int maximo) {
         this.minimo = minimo;
         this.maximo = maximo;
     }
 
     @Override
-    public boolean validar(int numeroSorteado, Jogo jogo) {
+    public boolean processar(EntidadeDeDominio entidadeDeDominio) {
+        Bola bolaSorteada = (Bola) entidadeDeDominio;
+        int numeroSorteado = bolaSorteada.getNumero();
+        Jogo jogo = bolaSorteada.getJogo();
         int soma = jogo.somarNumerosMarcados() + numeroSorteado;
         return (soma >= minimo || minimoAindaPodeSerAtingido(numeroSorteado, jogo)) && soma <= maximo;
+
     }
 
     private boolean minimoAindaPodeSerAtingido(int numeroSorteado, Jogo jogo) {

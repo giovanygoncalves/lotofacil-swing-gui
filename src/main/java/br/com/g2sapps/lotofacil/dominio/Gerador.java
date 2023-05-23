@@ -1,29 +1,30 @@
 package br.com.g2sapps.lotofacil.dominio;
 
-import br.com.g2sapps.lotofacil.negocio.Validador;
 import java.util.List;
 import java.util.NoSuchElementException;
+import br.com.g2sapps.lotofacil.negocio.RegraDeNegocio;
 
-public class Apostador {
+public class Gerador {
 
     public static final int MARCAR_QUANTOS_NUMEROS = 15;
     private final Jogo jogo;
     private final Globo globo;
 
-    public Apostador() {
+    public Gerador() {
         jogo = new Jogo();
         globo = new Globo();
     }
 
-    public Jogo gerarJogo(List<Validador> validadores) {
+    public Jogo gerarJogo(List<RegraDeNegocio> regrasDeNegocio) {
         while (jogo.obterQuantidadeDeNumerosMarcados() < MARCAR_QUANTOS_NUMEROS) {
-            Bola bola = sortearBola();
-            removerBola(bola);
-            int numeroSorteado = bola.getNumero();
+            Bola bolaSorteada = sortearBola();
+            bolaSorteada.setJogo(jogo);
+            removerBola(bolaSorteada);
+            int numeroSorteado = bolaSorteada.getNumero();
             jogo.sinalizarNumeroNaoValidadoAinda(numeroSorteado);
             boolean numeroValido = true;
-            for (Validador validador : validadores) {
-                if (!validador.validar(numeroSorteado, jogo)) {
+            for (RegraDeNegocio regraDeNegocio : regrasDeNegocio) {
+                if (!regraDeNegocio.processar(bolaSorteada)) {
                     numeroValido = false;
                     break;
                 }

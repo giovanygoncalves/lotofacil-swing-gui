@@ -8,7 +8,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
-        <exec.mainClass>br.com.g2sapps.lotofacil.main.GeradorDeJogo</exec.mainClass>
+        <exec.mainClass>br.com.g2sapps.lotofacil.principal.GeradorDeJogo</exec.mainClass>
     </properties>
     <build>
         <plugins>
@@ -21,7 +21,7 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>br.com.g2sapps.lotofacil.main.GeradorDeJogo</mainClass>
+                            <mainClass>br.com.g2sapps.lotofacil.principal.GeradorDeJogo</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
